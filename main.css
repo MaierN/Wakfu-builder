@@ -1,0 +1,31 @@
+
+.rarity_img {
+    height: 25px;
+}
+
+.table td {
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+.table th, .table td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.compact-table {
+    margin: 0px;
+}
+
+.compact-table td {
+    font-size: 80%;
+    text-align: left;
+}
+
+.compact-table tr:first-child>td {
+    border: none;
+}
+
+.main-form {
+    margin-bottom: 15px;
+}
