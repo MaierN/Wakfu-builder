@@ -83,9 +83,33 @@ def parse_items(html_content, items):
             if div.getAttribute("class") == "ak-title":
                 bonus_str = div.firstChild.nodeValue.strip()
 
-                value = get_first_number(bonus_str)
-                item["bonuses"][bonus_str[len(value):].strip()] = int(value or "0")
+                if bonus_str == "":
+                    bonus_str = "1 Bonus spécial"
+                
+                while bonus_str.find("  ") >= 0:
+                    bonus_str = bonus_str.replace("  ", " ")
+
                 item["bonuses_raw"].append(bonus_str)
+                    
+                value = get_first_number(bonus_str)
+                
+                if "Résistance" in bonus_str: # or "Résistance Air" in bonus_str or "Résistance Eau" in bonus_str or "Résistance Feu" in bonus_str or "Résistance Terre" in bonus_str or "Résistance [" in bonus_str or "Résistance sur " in bonus_str or "Résistance Élémentaire" in bonus_str:
+                    bonus_str = value + " Résistance [...]"
+
+                if "Maîtrise Air" in bonus_str or "Maîtrise Eau" in bonus_str or "Maîtrise Feu" in bonus_str or "Maîtrise Terre" in bonus_str or "Maîtrise [" in bonus_str or "Maîtrise sur " in bonus_str or "Maîtrise Élémentaire" in bonus_str:
+                    bonus_str = value + " Maîtrise élém."
+
+                if "PW" in bonus_str:
+                    bonus_str = value + " PW"
+                if "PA" in bonus_str:
+                    bonus_str = value + " PA"
+                if "PM" in bonus_str:
+                    bonus_str = value + " PM"
+
+                if "Niv. aux sorts" in bonus_str:
+                    bonus_str = value + " Niv. aux sorts"
+
+                item["bonuses"][bonus_str[len(value):].strip()] = int(value)
 
         items.append(item)
 

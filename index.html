@@ -23,10 +23,23 @@
             <form class="main-form" action="javascript:main_form_submit()">
                 <div class="form-row">
                     <div class="col">
-                        <label for="filter-level-from">De : <input type="number" class="form-control" min="0" max="200" placeholder="0" name="filter-level-from" id="filter-level-from" /></label>
+                        <label for="filter-level-from">De :
+                            <input type="number" class="form-control" min="0" max="200" placeholder="0" name="filter-level-from" id="filter-level-from" />
+                        </label>
                     </div>
                     <div class="col">
-                        <label for="filter-level-to">À : <input type="number" class="form-control" min="0" max="200" placeholder="200" name="filter-level-to" id="filter-level-to" /></label>
+                        <label for="filter-level-to">À :
+                            <input type="number" class="form-control" min="0" max="200" placeholder="200" name="filter-level-to" id="filter-level-to" />
+                        </label>
+                    </div>
+                    <div class="col">
+                        <label for="filter-bonuses">Bonus :
+                            <table class="table filter-bonus-table" name="filter-bonuses" id="filter-bonuses">
+                                <tbody>
+                                    <tr id="filter-bonus-tr"></tr>
+                                </tbody>
+                            </table>
+                        </label>
                     </div>
                 </div>
                 <div class="form-row">
@@ -40,11 +53,13 @@
             <div class="col">
                 <table class="table main-table">
                     <thead>
-                        <th colspan=2>Objet</th>
-                        <th>Rareté</th>
-                        <th>Type</th>
-                        <th>Bonus</th>
-                        <th>Niveau</th>
+                        <tr>
+                            <th colspan=2>Objet</th>
+                            <th>Rareté</th>
+                            <th>Type</th>
+                            <th>Bonus</th>
+                            <th>Niveau</th>
+                        </tr>
                     </thead>
                     <tbody id="main-tbody">
 

@@ -17,7 +17,7 @@
     margin: 0px;
 }
 
-.compact-table td {
+.compact-table td, .compact-table th {
     font-size: 80%;
     text-align: left;
 }
@@ -28,4 +28,16 @@
 
 .main-form {
     margin-bottom: 15px;
+}
+
+.filter-bonus-table-tr {
+    height: 39px;
+}
+
+.filter-bonus-table>tbody>tr>td {
+    vertical-align: top;
+}
+
+.filter-bonus-table table th {
+    border-top: none;
 }
