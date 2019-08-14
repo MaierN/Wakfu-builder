@@ -226,6 +226,16 @@ function render_type_filters() {
     })
 }
 
+function update_bonus_summary() {
+    span = document.getElementById("filter-summary")
+    
+    filters = []
+    bonus_filters.forEach(bonus_filter => {
+        if (bonus_filter.length) filters.push("(" + bonus_filter.join(" ou ") + ")")
+    })
+    span.textContent = filters.length ? filters.join(" et ") : "Aucun"
+}
+
 function bonus_checkbox_click(e) {
     let group = parseInt(e.dataset.group)
     let bonus = e.dataset.bonus
@@ -234,6 +244,8 @@ function bonus_checkbox_click(e) {
     if (e.checked) {
         bonus_filters[group].push(bonus)
     }
+
+    update_bonus_summary()
 }
 
 function type_checkbox_click(e) {

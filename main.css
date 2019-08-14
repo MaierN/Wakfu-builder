@@ -84,4 +84,18 @@
 .type-sub-table {
     margin-left: 5px;
     margin-right: 5px;
+    margin-bottom: 0px;
+}
+
+.filter-bonus-table {
+    margin-bottom: 0px;
+}
+
+.filter-summary-container {
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+.filter-summary-container span {
+    font-weight: normal;
 }
