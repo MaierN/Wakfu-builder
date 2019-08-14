@@ -3,16 +3,15 @@ const n_filter_bonus_groups = 5
 const n_filter_bonus_tables = 3
 const n_filter_type_tables = 4
 
+let types = []
 let bonuses = []
 
-let types = []
-
+let type_filters = []
 let bonus_filters = []
+
 for (let i = 0; i < n_filter_bonus_groups; i++) {
     bonus_filters.push([])
 }
-
-let type_filters = []
 
 function add_info(tr, content, is_header = false) {
     let td = document.createElement(is_header ? "th" : "td")
@@ -48,27 +47,6 @@ function show_items(items) {
         
         main_tbody.appendChild(item.dom_elt)
     }
-}
-
-function main_form_submit() {
-    let level_from = document.getElementById("filter-level-from").value || 0
-    let level_to = document.getElementById("filter-level-to").value || 200
-
-    show_items(item_data.filter(item => {
-        if (item.level < level_from) return false
-        if (item.level > level_to) return false
-
-        if (type_filters.length > 0 && !type_filters.includes(item.type)) return false
-
-        for (let i = 0; i < bonus_filters.length; i++) {
-            bonus_filter = bonus_filters[i]
-            if (bonus_filter.length > 0 && !bonus_filter.some(bonus => {
-                return bonus in item.bonuses
-            })) return false
-        }
-
-        return true
-    }))
 }
 
 function init_data() {
@@ -181,6 +159,7 @@ function render_bonus_filter_tables() {
             input.setAttribute("onclick", "bonus_checkbox_click(this)")
             input.setAttribute("data-bonus", bonus)
             input.setAttribute("data-group", i)
+            if (bonus_filters[i].includes(bonus)) input.setAttribute("checked", "true")
             add_info(tr, input)
         }
 
@@ -218,6 +197,7 @@ function render_type_filters() {
         input.setAttribute("name", "type-filter-checkbox-" + type)
         input.setAttribute("data-type", type)
         input.setAttribute("onclick", "type_checkbox_click(this)")
+        if (type_filters.includes(type)) input.setAttribute("checked", "true")
         add_info(tr, input)
 
         tbodies[Math.floor(current_type_count/individual_n_type)].appendChild(tr)
@@ -234,6 +214,65 @@ function update_bonus_summary() {
         if (bonus_filter.length) filters.push("(" + bonus_filter.join(" ou ") + ")")
     })
     span.textContent = filters.length ? filters.join(" et ") : "Aucun"
+}
+
+function save_storage() {
+    localStorage.setItem("level_from", document.getElementById("filter-level-from").value || "")
+    localStorage.setItem("level_to", document.getElementById("filter-level-to").value || "")
+
+    localStorage.setItem("type_filters", JSON.stringify(type_filters))
+    localStorage.setItem("bonus_filters", JSON.stringify(bonus_filters))
+}
+
+function retrieve_storage() {
+    let had_storage = false
+
+    retrieved_level_from = localStorage.getItem("level_from")
+    if (retrieved_level_from) {
+        document.getElementById("filter-level-from").value = retrieved_level_from
+        had_storage = true
+    }
+    retrieved_level_to = localStorage.getItem("level_to")
+    if (retrieved_level_to) {
+        document.getElementById("filter-level-to").value = retrieved_level_to
+        had_storage = true
+    }
+
+    retrieved_type_filters = localStorage.getItem("type_filters")
+    if (retrieved_type_filters) {
+        type_filters = JSON.parse(retrieved_type_filters)
+        had_storage = true
+    }
+    retrieved_bonus_filters = localStorage.getItem("bonus_filters")
+    if (retrieved_bonus_filters) {
+        bonus_filters = JSON.parse(retrieved_bonus_filters)
+        had_storage = true
+    }
+
+    return had_storage
+}
+
+function main_form_submit() {
+    let level_from = document.getElementById("filter-level-from").value || 0
+    let level_to = document.getElementById("filter-level-to").value || 200
+
+    save_storage()
+
+    show_items(item_data.filter(item => {
+        if (item.level < level_from) return false
+        if (item.level > level_to) return false
+
+        if (type_filters.length > 0 && !type_filters.includes(item.type)) return false
+
+        for (let i = 0; i < bonus_filters.length; i++) {
+            bonus_filter = bonus_filters[i]
+            if (bonus_filter.length > 0 && !bonus_filter.some(bonus => {
+                return bonus in item.bonuses
+            })) return false
+        }
+
+        return true
+    }))
 }
 
 function bonus_checkbox_click(e) {
@@ -257,6 +296,10 @@ function type_checkbox_click(e) {
     }
 }
 
+let had_storage = retrieve_storage()
 init_data()
 render_bonus_filter_tables()
 render_type_filters()
+update_bonus_summary()
+
+if (had_storage) main_form_submit()
