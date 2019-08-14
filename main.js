@@ -1,14 +1,18 @@
 
 const n_filter_bonus_groups = 5
-const n_filter_bonus_tables = 4
+const n_filter_bonus_tables = 3
+const n_filter_type_tables = 4
 
-let bonus_count = 0
 let bonuses = []
+
+let types = []
 
 let bonus_filters = []
 for (let i = 0; i < n_filter_bonus_groups; i++) {
     bonus_filters.push([])
 }
+
+let type_filters = []
 
 function add_info(tr, content, is_header = false) {
     let td = document.createElement(is_header ? "th" : "td")
@@ -28,6 +32,8 @@ function show_items(items) {
     while (main_tbody.firstChild) {
         main_tbody.removeChild(main_tbody.firstChild)
     }
+
+    document.getElementById("found_items_count").textContent = items.length
 
     for (index in items) {
         let item = items[index]
@@ -51,6 +57,8 @@ function main_form_submit() {
     show_items(item_data.filter(item => {
         if (item.level < level_from) return false
         if (item.level > level_to) return false
+
+        if (type_filters.length > 0 && !type_filters.includes(item.type)) return false
 
         for (let i = 0; i < bonus_filters.length; i++) {
             bonus_filter = bonus_filters[i]
@@ -124,18 +132,22 @@ function init_data() {
     
         for (index in item.bonuses) {
             if (!bonuses.includes(index)) {
-                bonus_count++
                 bonuses.push(index)
             }
+        }
+
+        if (!types.includes(item.type)) {
+            types.push(item.type)
         }
     })
 
     bonuses.sort()
+    types.sort()
 }
 
 function render_bonus_filter_tables() {
     let filter_bonus_tr = document.getElementById("filter-bonus-tr")
-    let individual_n_bonus = Math.ceil(bonus_count/n_filter_bonus_tables)
+    let individual_n_bonus = Math.ceil(bonuses.length/n_filter_bonus_tables)
 
     let tbodies = []
     for (let i = 0; i < n_filter_bonus_tables; i++) {
@@ -164,7 +176,6 @@ function render_bonus_filter_tables() {
         add_info(tr, text_elt(bonus))
     
         for (let i = 0; i < n_filter_bonus_groups; i++) {
-            let input_id = "filter-bonus-" + bonus + "-" + i
             let input = document.createElement("input")
             input.setAttribute("type", "checkbox")
             input.setAttribute("onclick", "bonus_checkbox_click(this)")
@@ -179,6 +190,42 @@ function render_bonus_filter_tables() {
     })
 }
 
+function render_type_filters() {
+    let filter_type_tr = document.getElementById("filter-type-tr")
+    let individual_n_type = Math.ceil(types.length/n_filter_type_tables)
+
+    let tbodies = []
+    for (let i = 0; i < n_filter_type_tables; i++) {
+        let table = document.createElement("table")
+        table.setAttribute("class", "table table-sm type-sub-table")
+        let tbody = document.createElement("tbody")
+        table.appendChild(tbody)
+        add_info(filter_type_tr, table)
+
+        tbodies.push(tbody)
+    }
+
+    let current_type_count = 0
+    types.forEach(type => {
+        let tr = document.createElement("tr")
+        let label = document.createElement("label")
+        label.setAttribute("for", "type-filter-checkbox-" + type)
+        label.textContent = type
+        add_info(tr, label)
+        let input = document.createElement("input")
+        input.setAttribute("type", "checkbox")
+        input.setAttribute("id", "type-filter-checkbox-" + type)
+        input.setAttribute("name", "type-filter-checkbox-" + type)
+        input.setAttribute("data-type", type)
+        input.setAttribute("onclick", "type_checkbox_click(this)")
+        add_info(tr, input)
+
+        tbodies[Math.floor(current_type_count/individual_n_type)].appendChild(tr)
+
+        current_type_count++
+    })
+}
+
 function bonus_checkbox_click(e) {
     let group = parseInt(e.dataset.group)
     let bonus = e.dataset.bonus
@@ -189,5 +236,15 @@ function bonus_checkbox_click(e) {
     }
 }
 
+function type_checkbox_click(e) {
+    let type = e.dataset.type
+
+    type_filters = type_filters.filter(elt => {return elt !== type})
+    if (e.checked) {
+        type_filters.push(type)
+    }
+}
+
 init_data()
 render_bonus_filter_tables()
+render_type_filters()

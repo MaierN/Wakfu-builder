@@ -6,6 +6,8 @@
 .table td {
     padding-top: 0px;
     padding-bottom: 0px;
+    padding-left: 4px;
+    padding-right: 4px;
 }
 
 .table th, .table td {
@@ -40,4 +42,46 @@
 
 .filter-bonus-table table th {
     border-top: none;
+}
+
+.main-label {
+    font-weight: bold;
+}
+
+.main-label>* {
+    font-weight: normal;
+}
+
+.table-types {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.table-types label {
+    margin: 0px;
+}
+
+.label-large {
+    width: 100%;
+}
+
+.filter-bonus-table table {
+    width: 0px;
+}
+
+.type-sub-table td:first-child {
+    text-align: right;
+}
+.type-sub-table td:last-child {
+    text-align: left;
+}
+
+.type-sub-table td {
+    padding-left: 2px;
+    padding-right: 2px;
+}
+
+.type-sub-table {
+    margin-left: 5px;
+    margin-right: 5px;
 }
